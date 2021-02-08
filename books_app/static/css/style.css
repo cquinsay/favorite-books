@@ -1,0 +1,37 @@
+* {
+    margin:0;
+    padding: 0;
+}
+body {
+    width: 900px;
+    margin: 15px;;
+}
+.login_messages {
+    text-align: center;
+    color: red;
+}
+
+ul {
+    list-style: outside none none;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+    margin: 25px;
+}
+.section {
+    margin: 15px;
+}
+
+.fav {
+    color: goldenrod;
+}
+
+

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Favorite Books</title>
+</head>
+
+<body>
+    <div class="header">
+        <h2>Welcome, {{ request.session.user_name }}!</h2>
+        <a href="/logout">Log Out</a>
+    </div>
+    <div class="container">
+        <section>
+            <h3>Add a Favorite Book</h3>
+            {% if messages %}
+            <ul class="book_messages">
+                {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <form action="/add_book" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="title">Title:</label><input name="title" type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label><textarea class="form-control" rows="3" cols="20"
+                        name="description"></textarea>
+                </div>
+                <button class="btn btn-primary">Add</button>
+            </form>
+        </section>
+        <section>
+            <h3>All Books</h3>
+            <div id="all_books">
+                {% for book in books %}
+                {% if user in book.favoriter.all %}
+                <h4><a href="/books/{{book.id}}">
+                        <p>{{ book.title }}
+                    </a></h4>
+                <p>Added by {{ book.book_adder.first_name }} {{ book.book_adder.last_name }}</p>
+                <p class="fav">THIS BOOK IS ON YOUR FAVORITES LIST</p>
+                {% endif %}
+                {% endfor %}
+                {% for book in books %}
+                {% if user not in book.favoriter.all %}
+                <h4><a href="/books/{{book.id}}">
+                        <p>{{ book.title }}
+                    </a></h4>
+                <p>Added by {{ book.book_adder.first_name }} {{ book.book_adder.last_name }}</p>
+                <a href="/favorite/{{book.id}}" role="button" class="btn btn-warning">Add to Favorites</a>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

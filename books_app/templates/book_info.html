@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Favorite Books</title>
+</head>
+
+<body>
+    <div class="header">
+        <h2>Welcome, {{ request.session.user_name }}!</h2>
+        <nav><a href="/home">Home Page</a> | <a href="/logout">Log Out</a></nav>
+    </div>
+    <div class="container">
+        <section>
+            <h3>{{ book.title }}</h3> 
+            <p>Added by: {{ book.book_adder.first_name }} {{ book.book_adder.last_name }}</p>
+            <p>Added on: {{ book.created_at }}</p>
+            <p>Last updated at: {{ book.updated_at }}</p>
+            {% if book.book_adder.id != request.session.user_id %}
+            <p>Description: {{ book.description }}</p>
+            {% else %}
+            <form action="/books/{{book.id}}/update" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="description">Description:</label><textarea class="form-control" rows="3" cols="20"
+                        name="description" placeholder="{{book.description}}"></textarea>
+                </div>
+                <button class="btn btn-primary">Update</button>
+                <a href="/books/{{book.id}}/delete" role="button" class="btn btn-danger">Delete</a>
+            </form>
+            {% endif %}
+        </section>
+        <section>
+            <div id ="favorited_book">
+                <h3>Users Who Favorited This Book</h3>
+                <ul>
+                    {% for favorite in book.favoriter.all %}
+                    <li>{{ favorite.first_name }} {{ favorite.last_name }}</li>
+                    {% endfor %}
+                </ul>
+                {% if logged_user in book.favoriter.all %}
+                    <a href="/unfavorite/{{book.id}}" role="button" class="btn btn-danger">Remove From Favorites</a>
+                {% else %}
+                <a href="/favorite/{{book.id}}" role="button" class="btn btn-warning">Add to Favorites</a>
+                {% endif %} 
+            </div>
+        </section>
+</body>
+
+</html>
